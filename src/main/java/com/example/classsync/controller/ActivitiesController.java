@@ -1,6 +1,6 @@
 package com.example.classsync.controller;
 
-import com.example.classsync.data.MockData;
+import com.example.classsync.data.DataService;
 import com.example.classsync.model.Group;
 import com.example.classsync.model.Notification;
 import com.example.classsync.model.User;
@@ -25,7 +25,7 @@ public class ActivitiesController {
     @FXML private VBox  notifList;
     @FXML private Label unreadLabel;
 
-    private final MockData data = MockData.get();
+    private final DataService data = DataService.get();
     private final User     me   = Session.get().getCurrentUser();
 
     @FXML
@@ -98,12 +98,11 @@ public class ActivitiesController {
         meta.getChildren().add(time);
 
         if (n.getGroupId() != null) {
-            Group g = data.findGroup(n.getGroupId());
-            if (g != null) {
+            data.findGroup(n.getGroupId()).ifPresent(g -> {
                 Label groupBadge = new Label(g.getName());
                 groupBadge.getStyleClass().add("badge-accent");
                 meta.getChildren().add(groupBadge);
-            }
+            });
         }
 
         // "Tap to view" hint for unread
@@ -125,11 +124,13 @@ public class ActivitiesController {
 
         // Click → mark read + show detail dialog
         row.setOnMouseClicked(e -> {
+            // mark in DB
+            data.markNotificationRead(n.getId());
+            // mark in memory so UI updates immediately
             n.markRead();
             showDetailDialog(n);
             render();
         });
-
         return row;
     }
 
@@ -172,8 +173,7 @@ public class ActivitiesController {
 
         // Group badge if present
         if (n.getGroupId() != null) {
-            Group g = data.findGroup(n.getGroupId());
-            if (g != null) {
+            data.findGroup(n.getGroupId()).ifPresent(g -> {
                 HBox groupRow = new HBox(8);
                 groupRow.setAlignment(Pos.CENTER_LEFT);
                 Label fromLabel = new Label("Group");
@@ -182,7 +182,7 @@ public class ActivitiesController {
                 groupBadge.getStyleClass().add("badge-accent");
                 groupRow.getChildren().addAll(fromLabel, groupBadge);
                 body.getChildren().add(groupRow);
-            }
+            });
         }
 
         // Description block — if notification has extra detail
@@ -228,6 +228,9 @@ public class ActivitiesController {
 
     @FXML
     private void markAllRead() {
+        // DB
+        data.markAllNotificationsRead(me.getId());
+        // in-memory
         data.getNotificationsForUser(me).forEach(Notification::markRead);
         render();
     }

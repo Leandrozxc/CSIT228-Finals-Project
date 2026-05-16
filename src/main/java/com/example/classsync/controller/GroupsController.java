@@ -1,6 +1,6 @@
 package com.example.classsync.controller;
 
-import com.example.classsync.data.MockData;
+import com.example.classsync.data.DataService;
 import com.example.classsync.model.Group;
 import com.example.classsync.model.Task;
 import com.example.classsync.model.TaskStatus;
@@ -21,7 +21,7 @@ public class GroupsController {
 
     @FXML private VBox groupList;
 
-    private final MockData data = MockData.get();
+    private final DataService data = DataService.get();
     private final User     me   = Session.get().getCurrentUser();
 
     @FXML

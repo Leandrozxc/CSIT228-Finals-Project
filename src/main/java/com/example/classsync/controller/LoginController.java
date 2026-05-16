@@ -1,6 +1,6 @@
 package com.example.classsync.controller;
 
-import com.example.classsync.data.MockData;
+import com.example.classsync.data.DataService;
 import com.example.classsync.model.Role;
 import com.example.classsync.model.User;
 import com.example.classsync.session.Session;
@@ -22,7 +22,7 @@ public class LoginController {
 
     @FXML
     private void handleLogin() {
-        String email = emailField.getText();
+        String email = emailField.getText().trim();
         String pass  = passwordField.getText();
 
         if (email.isBlank() || pass.isBlank()) {
@@ -30,7 +30,7 @@ public class LoginController {
             return;
         }
 
-        Optional<User> result = MockData.get().login(email, pass);
+        Optional<User> result = DataService.get().login(email, pass);
         if (result.isEmpty()) {
             errorLabel.setText("Invalid email or password.");
             passwordField.clear();
@@ -48,10 +48,8 @@ public class LoginController {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/com/example/classsync/fxml/" + fxml));
             Scene scene = new Scene(loader.load(), 1100, 700);
-
             scene.getStylesheets().add(
-                    getClass().getResource("/css/app.css").toExternalForm()
-            );
+                    getClass().getResource("/css/app.css").toExternalForm());
 
             Stage stage = (Stage) emailField.getScene().getWindow();
             stage.setScene(scene);

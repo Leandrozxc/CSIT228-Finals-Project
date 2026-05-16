@@ -1,44 +1,37 @@
 package com.example.classsync.controller;
 
-import com.example.classsync.data.MockData;
+import com.example.classsync.data.DataService;
 import com.example.classsync.model.*;
 import com.example.classsync.session.Session;
 import com.example.classsync.util.AvatarFactory;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.UUID;
 
 public class EvaluateController {
 
     @FXML private VBox contentArea;
 
-    private final MockData data = MockData.get();
-    private final User     me   = Session.get().getCurrentUser();
-
-    // Rating state for the current eval form
-    private final Map<String, int[]> ratings = new HashMap<>();
-    // keys: "effort", "reliability", "quality", "overall" → value [0]
+    private final DataService data = DataService.get();
+    private final User        me   = Session.get().getCurrentUser();
 
     @FXML
     public void initialize() {
         showGroupPicker();
     }
 
-    // ── Phase 1: Group picker ────────────────────────────────────────────────
-
     private void showGroupPicker() {
         contentArea.getChildren().clear();
-        List<Group> myGroups = data.getGroupsForUser(me);
 
         Label hint = new Label("Select a group to evaluate your peers:");
         hint.setStyle("-fx-font-size: 13px; -fx-text-fill: #8a8a96;");
         contentArea.getChildren().add(hint);
+
+        List<Group> myGroups = data.getGroupsForUser(me);
 
         for (Group g : myGroups) {
             VBox card = new VBox(10);
@@ -48,10 +41,9 @@ public class EvaluateController {
             Label name = new Label(g.getName());
             name.setStyle("-fx-font-size: 15px; -fx-font-weight: 700; -fx-text-fill: #f0f0f4;");
 
-            // Count how many members still need to be evaluated
             long pending = g.getUsers().stream()
                     .filter(u -> !u.getId().equals(me.getId()))
-                    .filter(u -> !data.hasEvaluated(me, u, g.getId()))
+                    .filter(u -> !data.hasEvaluated(me.getId(), u.getId(), g.getId()))
                     .count();
             long total = g.getUsers().size() - 1;
 
@@ -65,12 +57,9 @@ public class EvaluateController {
         }
     }
 
-    // ── Phase 2: Member list for selected group ──────────────────────────────
-
     private void showMemberList(Group group) {
         contentArea.getChildren().clear();
 
-        // Back button
         Button back = new Button("← Back to Groups");
         back.getStyleClass().add("cs-btn-ghost");
         back.setOnAction(e -> showGroupPicker());
@@ -92,21 +81,19 @@ public class EvaluateController {
         }
 
         for (User peer : peers) {
-            boolean alreadyDone = data.hasEvaluated(me, peer, group.getId());
+            boolean alreadyDone = data.hasEvaluated(me.getId(), peer.getId(), group.getId());
             contentArea.getChildren().add(buildPeerCard(peer, group, alreadyDone));
         }
     }
-
-    // ── Peer eval card ───────────────────────────────────────────────────────
 
     private VBox buildPeerCard(User peer, Group group, boolean alreadyDone) {
         VBox card = new VBox(14);
         card.getStyleClass().add("cs-card");
 
-        // Header
         HBox header = new HBox(12);
         header.setAlignment(Pos.CENTER_LEFT);
         header.getChildren().add(AvatarFactory.make(peer, 38));
+
         VBox info = new VBox(2);
         HBox.setHgrow(info, Priority.ALWAYS);
         Label name = new Label(peer.getName());
@@ -127,7 +114,6 @@ public class EvaluateController {
 
         card.getChildren().add(header);
 
-        // Rating rows
         int[] effort      = {0};
         int[] reliability = {0};
         int[] quality     = {0};
@@ -140,7 +126,6 @@ public class EvaluateController {
                 buildStarRow("Overall",     overall)
         );
 
-        // Notes
         Label notesLabel = new Label("Notes / Comment");
         notesLabel.setStyle("-fx-font-size: 11px; -fx-font-weight: 600; -fx-text-fill: #8a8a96;");
         TextArea notesArea = new TextArea();
@@ -149,7 +134,6 @@ public class EvaluateController {
         notesArea.setWrapText(true);
         notesArea.getStyleClass().add("cs-area");
 
-        // Submit
         Button submit = new Button("Submit Evaluation");
         submit.getStyleClass().add("cs-btn-primary");
         Label errLabel = new Label("");
@@ -160,15 +144,13 @@ public class EvaluateController {
                 errLabel.setText("Please rate all four categories.");
                 return;
             }
-            String eid = "e" + (data.getEvaluations().size() + 1);
             Evaluation ev = new Evaluation(
-                    eid, me, peer, group.getId(),
+                    UUID.randomUUID().toString(),
+                    me, peer, group.getId(),
                     effort[0], reliability[0], quality[0], overall[0],
                     notesArea.getText().trim()
             );
-            data.addEvaluation(ev);
-
-            // Re-render this group's member list
+            data.saveEvaluation(ev);
             showMemberList(group);
         });
 
@@ -191,17 +173,18 @@ public class EvaluateController {
         for (int i = 1; i <= 5; i++) {
             final int val = i;
             Button star = new Button("☆");
-            star.getStyleClass().add("star-btn");
             star.setStyle("-fx-font-size: 20px; -fx-text-fill: #8a8a96; " +
                     "-fx-background-color: transparent; -fx-border-color: transparent; -fx-cursor: hand;");
             star.setOnAction(e -> {
                 valueHolder[0] = val;
                 for (int j = 0; j < 5; j++) {
-                    String color = j < val ? "#facc15" : "#8a8a96";
+                    String color  = j < val ? "#facc15" : "#8a8a96";
                     String symbol = j < val ? "★" : "☆";
                     starBtns[j].setText(symbol);
-                    starBtns[j].setStyle("-fx-font-size: 20px; -fx-text-fill: " + color +
-                            "; -fx-background-color: transparent; -fx-border-color: transparent; -fx-cursor: hand;");
+                    starBtns[j].setStyle(
+                            "-fx-font-size: 20px; -fx-text-fill: " + color +
+                                    "; -fx-background-color: transparent;" +
+                                    " -fx-border-color: transparent; -fx-cursor: hand;");
                 }
             });
             starBtns[i - 1] = star;

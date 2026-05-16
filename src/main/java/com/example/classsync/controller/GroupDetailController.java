@@ -1,7 +1,6 @@
 package com.example.classsync.controller;
 
-import com.example.classsync.data.MockData;
-import com.example.classsync.db.SubmissionRepository;
+import com.example.classsync.data.DataService;
 import com.example.classsync.model.*;
 import com.example.classsync.session.Session;
 import com.example.classsync.util.AvatarFactory;
@@ -22,6 +21,7 @@ import java.io.File;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.UUID;
 
 public class GroupDetailController {
 
@@ -31,9 +31,9 @@ public class GroupDetailController {
     @FXML private VBox   memberList;
     @FXML private Button btnAddTask;
 
-    private final MockData data  = MockData.get();
-    private final User     me    = Session.get().getCurrentUser();
-    private       Group    group;
+    private final DataService data = DataService.get();
+    private final User        me   = Session.get().getCurrentUser();
+    private       Group       group;
 
     @FXML
     public void initialize() {
@@ -75,11 +75,9 @@ public class GroupDetailController {
         row.getStyleClass().add("task-row");
         row.setCursor(javafx.scene.Cursor.HAND);
 
-        // Status pill
         Label statusPill = new Label(statusText(task.getStatus()));
         statusPill.getStyleClass().add(statusStyle(task.getStatus()));
 
-        // Title + assignee meta
         VBox textBlock = new VBox(4);
         HBox.setHgrow(textBlock, Priority.ALWAYS);
 
@@ -104,19 +102,15 @@ public class GroupDetailController {
         textBlock.getChildren().addAll(title, meta);
         row.getChildren().addAll(statusPill, textBlock);
 
-        // Score badge if completed
         if (task.getStatus() == TaskStatus.COMPLETED) {
             row.getChildren().add(buildScoreBadge(task));
         }
 
-        // Hover effect
         row.setOnMouseEntered(e -> row.setStyle(
                 "-fx-background-color: #2a2a2a; -fx-background-radius: 8; " +
                         "-fx-border-color: #3a3a3a; -fx-border-radius: 8; " +
                         "-fx-border-width: 1; -fx-padding: 12;"));
         row.setOnMouseExited(e -> row.getStyleClass().setAll("task-row"));
-
-        // Click → open task popup
         row.setOnMouseClicked(e -> showTaskPopup(task));
 
         return row;
@@ -174,7 +168,7 @@ public class GroupDetailController {
         root.getStyleClass().add("dialog-box");
         root.setPrefWidth(460);
 
-        // ── Header ──
+        // Header
         HBox header = new HBox(12);
         header.setAlignment(Pos.CENTER_LEFT);
         header.setPadding(new Insets(20, 24, 16, 24));
@@ -204,7 +198,6 @@ public class GroupDetailController {
 
         headerInfo.getChildren().addAll(titleLabel, headerMeta);
 
-        // Assignee avatar
         if (task.getAssignee() != null) {
             StackPane av = AvatarFactory.make(task.getAssignee(), 32);
             header.getChildren().addAll(av, headerInfo);
@@ -212,11 +205,10 @@ public class GroupDetailController {
             header.getChildren().add(headerInfo);
         }
 
-        // ── Body ──
+        // Body
         VBox body = new VBox(14);
         body.setPadding(new Insets(20, 24, 20, 24));
 
-        // Description block
         Label descTitle = new Label("DESCRIPTION");
         descTitle.getStyleClass().add("dialog-field-label");
 
@@ -238,7 +230,6 @@ public class GroupDetailController {
         descBox.getChildren().add(descBody);
         body.getChildren().addAll(descTitle, descBox);
 
-        // ── Submission section (own task only, not yet completed) ──
         Stage dialog = new Stage(StageStyle.TRANSPARENT);
         dialog.initModality(Modality.APPLICATION_MODAL);
 
@@ -248,7 +239,6 @@ public class GroupDetailController {
             sep.setStyle("-fx-background-color: #2e2e2e;");
             body.getChildren().add(sep);
 
-            // File picker
             Label fileTitle = new Label("ATTACHMENT (PDF)");
             fileTitle.getStyleClass().add("dialog-field-label");
 
@@ -261,8 +251,7 @@ public class GroupDetailController {
 
             Button browseBtn = new Button("Browse PDF");
             browseBtn.getStyleClass().add("cs-btn-ghost");
-            browseBtn.setStyle(
-                    "-fx-border-color: #333333; -fx-border-radius: 6; -fx-border-width: 1;");
+            browseBtn.setStyle("-fx-border-color: #333333; -fx-border-radius: 6; -fx-border-width: 1;");
 
             final File[] selectedFile = {null};
             browseBtn.setOnAction(e -> {
@@ -280,7 +269,6 @@ public class GroupDetailController {
 
             fileRow.getChildren().addAll(fileNameLabel, browseBtn);
 
-            // Note
             Label noteTitle = new Label("NOTE (OPTIONAL)");
             noteTitle.getStyleClass().add("dialog-field-label");
 
@@ -290,13 +278,11 @@ public class GroupDetailController {
             noteArea.setWrapText(true);
             noteArea.getStyleClass().add("cs-area");
 
-            // Error
             Label errLabel = new Label("");
             errLabel.setStyle("-fx-text-fill: #e94560; -fx-font-size: 11px;");
 
             body.getChildren().addAll(fileTitle, fileRow, noteTitle, noteArea, errLabel);
 
-            // ── Footer with Submit ──
             HBox footer = new HBox(10);
             footer.setAlignment(Pos.CENTER_RIGHT);
             footer.setPadding(new Insets(14, 24, 20, 24));
@@ -318,23 +304,15 @@ public class GroupDetailController {
                     return;
                 }
 
-                // Save to DB
-                boolean saved = SubmissionRepository.save(
+                data.submitTask(
                         task.getId(),
                         me.getId(),
                         selectedFile[0].getAbsolutePath(),
                         noteArea.getText().trim()
                 );
 
-                if (!saved) {
-                    errLabel.setText("Failed to save submission. Check DB connection.");
-                    return;
-                }
 
-                // Update task status in DB
-                SubmissionRepository.updateTaskStatus(task.getId(), 0);
-
-                // Update in-memory MockData so UI reflects immediately
+                // Update in-memory object so UI reflects immediately
                 task.setStatus(TaskStatus.COMPLETED);
                 task.setAiScore(0);
                 task.setSubmissionFile(selectedFile[0].getAbsolutePath());
@@ -345,7 +323,6 @@ public class GroupDetailController {
             });
 
         } else {
-            // ── Read-only footer ──
             HBox footer = new HBox();
             footer.setAlignment(Pos.CENTER_RIGHT);
             footer.setPadding(new Insets(14, 24, 20, 24));
@@ -469,9 +446,10 @@ public class GroupDetailController {
             String taskTitle = tField.getText().trim();
             if (taskTitle.isBlank()) { errLabel.setText("Title is required."); return; }
 
-            String tid = "t" + (data.getTasks().size() + 1);
             Task newTask = new Task(
-                    tid, taskTitle, dArea.getText().trim(),
+                    UUID.randomUUID().toString(),
+                    taskTitle,
+                    dArea.getText().trim(),
                     assignBox.getValue(),
                     TaskStatus.PENDING,
                     LocalDate.now().plusDays(7),
