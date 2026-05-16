@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<ScrollPane fitToWidth="true" style="-fx-background: #1a1a1e; -fx-background-color: transparent; -fx-viewport-background: #1a1a1e;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.classsync.controller.GroupDetailController">
+    <content>
+        <VBox spacing="24.0">
+            <padding>
+                <Insets bottom="32.0" left="24.0" right="24.0" top="24.0" />
+            </padding>
+            <children>
+                <!-- Navigation Back Controls Header -->
+                <HBox alignment="CENTER_LEFT" spacing="12.0">
+                    <children>
+                        <Button mnemonicParsing="false" onAction="#goBack" styleClass="cs-btn-ghost" style="-fx-background-color: transparent; -fx-text-fill: #8a8a96; -fx-cursor: hand;" text="← Back to Groups" />
+                    </children>
+                </HBox>
+
+                <!-- Group Header Block -->
+                <HBox alignment="TOP_LEFT" spacing="16.0">
+                    <children>
+                        <VBox spacing="6.0" HBox.hgrow="ALWAYS">
+                            <children>
+                                <Label fx:id="groupName" text="Group Title" textFill="#f0f0f4">
+                                    <font>
+                                        <Font name="System Bold" size="22.0" />
+                                    </font>
+                                </Label>
+                                <HBox fx:id="groupMeta" alignment="CENTER_LEFT" spacing="6.0" />
+                            </children>
+                        </VBox>
+                        <Button fx:id="btnAddTask" mnemonicParsing="false" onAction="#showAddTaskDialog" styleClass="cs-btn-primary" style="-fx-background-color: #e94560; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6; -fx-cursor: hand; -fx-padding: 8 16;" text="+ Create Task" />
+                    </children>
+                </HBox>
+
+                <!-- Layout Workspace Split Grid Splitter -->
+                <HBox spacing="20.0">
+                    <children>
+                        <!-- Tasks Board Column -->
+                        <VBox spacing="12.0" HBox.hgrow="ALWAYS">
+                            <children>
+                                <Label text="Task Tracking" textFill="#f0f0f4">
+                                    <font>
+                                        <Font name="System Bold" size="14.0" />
+                                    </font>
+                                </Label>
+                                <VBox fx:id="taskList" spacing="10.0" />
+                            </children>
+                        </VBox>
+
+                        <!-- Group Composition Roster Column -->
+                        <VBox prefWidth="300.0" spacing="12.0">
+                            <children>
+                                <Label text="Team Roster" textFill="#f0f0f4">
+                                    <font>
+                                        <Font name="System Bold" size="14.0" />
+                                    </font>
+                                </Label>
+                                <VBox fx:id="memberList" spacing="8.0" />
+                            </children>
+                        </VBox>
+                    </children>
+                </HBox>
+            </children>
+        </VBox>
+    </content>
+</ScrollPane>

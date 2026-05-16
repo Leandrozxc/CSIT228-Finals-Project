@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Standalone dashboard page wrapper targeting your planned Gemini AI Metrics integrations -->
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<ScrollPane fitToWidth="true" style="-fx-background: #1a1a1e; -fx-background-color: transparent; -fx-viewport-background: #1a1a1e;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.classsync.controller.InsightsController">
+    <content>
+        <VBox alignment="CENTER" spacing="12.0">
+            <padding>
+                <Insets bottom="40.0" left="24.0" right="24.0" top="40.0" />
+            </padding>
+            <children>
+                <Label text="🤖" style="-fx-font-size: 48px;" />
+                <Label text="Gemini AI Insights Dashboard" textFill="#f0f0f4">
+                    <font>
+                        <Font name="System Bold" size="18.0" />
+                    </font>
+                </Label>
+                <Label text="Automated team status tracking and contribution analysis are currently processing." textFill="#8a8a96" wrapText="true" style="-fx-font-size: 13px;" />
+            </children>
+        </VBox>
+    </content>
+</ScrollPane>

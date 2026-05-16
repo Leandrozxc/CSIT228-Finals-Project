@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane prefHeight="700.0" prefWidth="1100.0" style="-fx-background-color: #1a1a1e;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.classsync.controller.ShellStudentController">
+
+    <!-- LEFT NAVIGATION APPS-RAIL -->
+    <left>
+        <VBox prefWidth="240.0" spacing="20.0" style="-fx-background-color: #232329; -fx-border-color: rgba(255,255,255,0.04); -fx-border-width: 0 1 0 0;" BorderPane.alignment="CENTER">
+            <padding>
+                <Insets bottom="20.0" left="16.0" right="16.0" top="24.0" />
+            </padding>
+            <children>
+                <!-- System Branding Block -->
+                <HBox alignment="CENTER_LEFT" spacing="12.0">
+                    <children>
+                        <StackPane fx:id="railAvatar" prefHeight="32.0" prefWidth="32.0" />
+                        <Label text="ClassSync" textFill="#f0f0f4">
+                            <font>
+                                <Font name="System Bold" size="18.0" />
+                            </font>
+                        </Label>
+                    </children>
+                </HBox>
+
+                <!-- Navigation Links Wrapper -->
+                <VBox spacing="8.0" VBox.vgrow="ALWAYS">
+                    <children>
+                        <Button fx:id="btnGroups" alignment="BASELINE_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#navGroups" prefHeight="40.0" text="Groups">
+                            <graphic>
+                                <VBox alignment="CENTER_LEFT"><children><Label text="👥  " style="-fx-font-size: 14px;" /></children></VBox>
+                            </graphic>
+                        </Button>
+                        <Button fx:id="btnActivities" alignment="BASELINE_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#navActivities" prefHeight="40.0" text="Activity">
+                            <graphic>
+                                <VBox alignment="CENTER_LEFT"><children><Label text="🔔  " style="-fx-font-size: 14px;" /></children></VBox>
+                            </graphic>
+                        </Button>
+                        <Button fx:id="btnEvaluate" alignment="BASELINE_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#navEvaluate" prefHeight="40.0" text="Evaluate">
+                            <graphic>
+                                <VBox alignment="CENTER_LEFT"><children><Label text="⭐️  " style="-fx-font-size: 14px;" /></children></VBox>
+                            </graphic>
+                        </Button>
+                        <Button fx:id="btnInsights" alignment="BASELINE_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#navInsights" prefHeight="40.0" text="Insights">
+                            <graphic>
+                                <VBox alignment="CENTER_LEFT"><children><Label text="🤖  " style="-fx-font-size: 14px;" /></children></VBox>
+                            </graphic>
+                        </Button>
+                    </children>
+                    <padding>
+                        <Insets top="10.0" />
+                    </padding>
+                </VBox>
+
+                <!-- System Actions / Logout Container -->
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleLogout" prefHeight="38.0" style="-fx-background-color: transparent; -fx-text-fill: #8a8a96; -fx-alignment: BASELINE_LEFT; -fx-cursor: hand;" text="🚪  Logout" />
+            </children>
+        </VBox>
+    </left>
+
+    <!-- SHELL WORKSPACE CANVAS CONTAINER -->
+    <center>
+        <VBox BorderPane.alignment="CENTER">
+            <children>
+                <!-- Top Dashboard Control Header -->
+                <HBox alignment="CENTER_LEFT" prefHeight="64.0" style="-fx-background-color: #232329; -fx-border-color: rgba(255,255,255,0.04); -fx-border-width: 0 0 1 0;">
+                    <padding>
+                        <Insets left="24.0" right="24.0" />
+                    </padding>
+                    <children>
+                        <Label fx:id="pageTitle" text="Dashboard" textFill="#f0f0f4">
+                            <font>
+                                <Font name="System Bold" size="20.0" />
+                            </font>
+                        </Label>
+                        <HBox HBox.hgrow="ALWAYS" />
+                        <HBox alignment="CENTER" spacing="10.0">
+                            <children>
+                                <VBox alignment="CENTER_RIGHT">
+                                    <children>
+                                        <Label fx:id="topName" text="Loading User..." textFill="#f0f0f4">
+                                            <font>
+                                                <Font name="System Bold" size="13.0" />
+                                            </font>
+                                        </Label>
+                                        <Label fx:id="topRole" text="STUDENT" textFill="#8a8a96">
+                                            <font>
+                                                <Font size="11.0" />
+                                            </font>
+                                        </Label>
+                                    </children>
+                                </VBox>
+                                <StackPane fx:id="topAvatar" prefHeight="32.0" prefWidth="32.0" />
+                            </children>
+                        </HBox>
+                    </children>
+                </HBox>
+
+                <!-- Dynamic Content View Frame -->
+                <StackPane fx:id="contentPane" VBox.vgrow="ALWAYS" style="-fx-background-color: #1a1a1e;" />
+            </children>
+        </VBox>
+    </center>
+</BorderPane>

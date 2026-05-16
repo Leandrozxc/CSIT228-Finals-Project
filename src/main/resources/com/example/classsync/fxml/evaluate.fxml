@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<ScrollPane fitToWidth="true" style="-fx-background: #1a1a1e; -fx-background-color: transparent; -fx-viewport-background: #1a1a1e;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.classsync.controller.EvaluateController">
+    <content>
+        <VBox spacing="16.0">
+            <padding>
+                <Insets bottom="32.0" left="24.0" right="24.0" top="24.0" />
+            </padding>
+            <children>
+                <Label text="Peer Accountability Evaluations" textFill="#f0f0f4">
+                    <font>
+                        <Font name="System Bold" size="16.0" />
+                    </font>
+                </Label>
+                <!-- Handles rendering phase 1 (pickers) and phase 2 (cards layout) -->
+                <VBox fx:id="contentArea" spacing="16.0" />
+            </children>
+        </VBox>
+    </content>
+</ScrollPane>
