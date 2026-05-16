@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="10" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.classsync.controller.AdminLogsController">
+    <Label text="System Audit &amp; Security Logs" styleClass="section-title" />
+    <TableView fx:id="logTable" VBox.vgrow="ALWAYS" styleClass="card">
+        <columns>
+            <TableColumn fx:id="colTime" text="Timestamp" prefWidth="150" />
+            <TableColumn fx:id="colUser" text="Actor" prefWidth="150" />
+            <TableColumn fx:id="colAction" text="Action" prefWidth="150" />
+            <TableColumn fx:id="colDetails" text="Details" prefWidth="400" />
+        </columns>
+    </TableView>
+</VBox>

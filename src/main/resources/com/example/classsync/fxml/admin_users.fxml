@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox spacing="20" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.classsync.controller.AdminUsersController">
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <TextField fx:id="searchField" promptText="Search name or email..." styleClass="cs-field" prefWidth="300" />
+        <Button text="Search" onAction="#handleSearch" styleClass="cs-btn-primary" />
+        <Region HBox.hgrow="ALWAYS" />
+        <ComboBox fx:id="roleCombo" promptText="Change Role To..." prefWidth="150" />
+        <Button text="Update Role" onAction="#handleChangeRole" styleClass="cs-btn-primary" />
+        <Button text="Deactivate" onAction="#handleDeactivate" style="-fx-background-color: #ff4d4d;" styleClass="cs-btn-primary" />
+    </HBox>
+
+    <TableView fx:id="userTable" VBox.vgrow="ALWAYS" styleClass="card">
+        <columns>
+            <TableColumn fx:id="colName" text="Name" prefWidth="200" />
+            <TableColumn fx:id="colEmail" text="Email" prefWidth="250" />
+            <TableColumn fx:id="colRole" text="Role" prefWidth="150" />
+            <TableColumn fx:id="colStatus" text="Active" prefWidth="100" />
+        </columns>
+    </TableView>
+</VBox>

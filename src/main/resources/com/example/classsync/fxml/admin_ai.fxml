@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox spacing="20" maxWidth="600" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.classsync.controller.AdminAIController">
+    <VBox spacing="8" styleClass="cs-card">
+        <Label text="Gemini Flash API Key" styleClass="section-title" />
+        <PasswordField fx:id="apiKeyField" styleClass="cs-field" />
+        <Label text="Do not share this key. It is used for automated grading." styleClass="workspace-subtitle" />
+    </VBox>
+
+    <VBox spacing="8" styleClass="cs-card">
+        <Label text="AI Grading Prompt (System Instructions)" styleClass="section-title" />
+        <TextArea fx:id="promptArea" prefHeight="200" styleClass="cs-area" wrapText="true" />
+    </VBox>
+
+    <Button text="Save Changes" onAction="#handleSave" styleClass="cs-btn-primary" prefWidth="200" />
+</VBox>

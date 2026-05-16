@@ -5,9 +5,10 @@ public class User {
     private final String name;
     private final String email;
     private final String password;
-    private final Role   role;
+    private Role   role;
     private final String color;    // avatar color
     private final String section;
+    private boolean isActive = true;
 
     public User(String id, String name, String email, String password,
                 Role role, String color, String section) {
@@ -19,7 +20,8 @@ public class User {
         this.color    = color;
         this.section  = section;
     }
-
+    public void setActive(boolean active) {isActive = active;}
+    public void setRole(Role role) { this.role = role; }
     public String getId()       { return id; }
     public String getName()     { return name; }
     public String getEmail()    { return email; }
@@ -27,6 +29,7 @@ public class User {
     public Role   getRole()     { return role; }
     public String getColor()    { return color; }
     public String getSection()  { return section; }
+    public boolean isActive() { return isActive; }
 
     /** Two-letter initials from name */
     public String getInitials() {

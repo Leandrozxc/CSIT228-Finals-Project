@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox spacing="24" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+    <HBox spacing="16">
+        <!-- Stat Cards -->
+        <VBox prefWidth="200" styleClass="cs-card">
+            <Label text="TOTAL USERS" styleClass="workspace-subtitle" />
+            <Label text="5" style="-fx-font-size: 28; -fx-text-fill: white; -fx-font-weight: bold;" />
+        </VBox>
+        <VBox prefWidth="200" styleClass="cs-card">
+            <Label text="ACTIVE GROUPS" styleClass="workspace-subtitle" />
+            <Label text="2" style="-fx-font-size: 28; -fx-text-fill: white; -fx-font-weight: bold;" />
+        </VBox>
+        <VBox prefWidth="200" styleClass="cs-card">
+            <Label text="AI STATUS" styleClass="workspace-subtitle" />
+            <Label text="READY" style="-fx-font-size: 28; -fx-text-fill: #4ade80; -fx-font-weight: bold;" />
+        </VBox>
+    </HBox>
+
+    <VBox spacing="10" VBox.vgrow="ALWAYS">
+        <Label text="Recent System Activity" styleClass="section-title" />
+        <ListView fx:id="recentActivityList" style="-fx-background-color: transparent;" VBox.vgrow="ALWAYS" />
+    </VBox>
+</VBox>

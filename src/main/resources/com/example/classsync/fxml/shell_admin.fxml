@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<HBox prefHeight="700.0" prefWidth="1100.0" styleClass="root"
+      stylesheets="/css/app.css"
+      xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.example.classsync.controller.ShellAdminController">
+
+    <!-- Sidebar -->
+    <VBox prefWidth="240.0" styleClass="shell-sidebar">
+        <padding><Insets bottom="20" left="16" right="16" top="24" /></padding>
+
+        <Label styleClass="workspace-title" text="CLASSSYNC" />
+        <Label styleClass="workspace-subtitle" text="ADMIN CONSOLE" />
+
+        <Region prefHeight="32" />
+
+        <Label styleClass="nav-section-label" text="SYSTEM" />
+        <Button fx:id="btnDashboard" onAction="#navDashboard" prefWidth="210" styleClass="nav-btn-active" text="Dashboard" />
+        <Button fx:id="btnUsers" onAction="#navUsers" prefWidth="210" styleClass="nav-btn" text="User Management" />
+        <Button fx:id="btnLogs" onAction="#navLogs" prefWidth="210" styleClass="nav-btn" text="Audit Logs" />
+
+        <Label styleClass="nav-section-label" text="CONFIGURATION" />
+        <Button fx:id="btnAI" onAction="#navAI" prefWidth="210" styleClass="nav-btn" text="Gemini AI Settings" />
+
+        <!-- Push the logout button to the bottom -->
+        <Region VBox.vgrow="ALWAYS" />
+
+        <Separator styleClass="sidebar-divider" />
+        <Button onAction="#handleLogout" prefWidth="210" styleClass="btn-logout" text="Sign Out" />
+    </VBox>
+
+    <!-- Main Content Area -->
+    <VBox HBox.hgrow="ALWAYS">
+        <!-- Top Bar -->
+        <HBox alignment="CENTER_LEFT" prefHeight="64.0" spacing="16" styleClass="shell-topbar">
+            <padding><Insets left="24" right="24" /></padding>
+            <Label fx:id="pageTitle" styleClass="page-title" text="System Dashboard" />
+
+            <!-- Push the user info to the right -->
+            <Region HBox.hgrow="ALWAYS" />
+
+            <VBox alignment="CENTER_RIGHT">
+                <Label styleClass="user-name" text="Administrator" />
+                <Label styleClass="user-role" text="SYSTEM_ADMIN" />
+            </VBox>
+            <StackPane fx:id="topAvatar" />
+        </HBox>
+
+        <!-- Center Content Area where sub-pages load -->
+        <StackPane fx:id="contentPane" VBox.vgrow="ALWAYS" styleClass="shell-content">
+            <padding><Insets bottom="24" left="24" right="24" top="24" /></padding>
+        </StackPane>
+    </VBox>
+</HBox>
