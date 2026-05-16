@@ -10,6 +10,9 @@ public class Task {
     private TaskStatus status;
     private LocalDate  deadline;
     private final String groupId;
+    private double aiScore = 0;
+    private String submissionFile;
+    private String submissionNote;
 
     public Task(String id, String title, String description,
                 User assignee, TaskStatus status, LocalDate deadline, String groupId) {
@@ -34,4 +37,10 @@ public class Task {
     public LocalDate  getDeadline()              { return deadline; }
     public void       setDeadline(LocalDate d)   { this.deadline = d; }
     public String     getGroupId()               { return groupId; }
+    public double getAiScore() { return aiScore; }
+    public void setAiScore(double aiScore) { this.aiScore = aiScore; }
+    public String getSubmissionNote() { return submissionNote; }
+    public void setSubmissionNote(String submissionNote) { this.submissionNote = submissionNote; }
+    public String getSubmissionFile() { return submissionFile; }
+    public void setSubmissionFile(String submissionFile) { this.submissionFile = submissionFile; }
 }
