@@ -6,40 +6,35 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 
-<ScrollPane fitToWidth="true" style="-fx-background: #1a1a1e; -fx-background-color: transparent; -fx-viewport-background: #1a1a1e;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.classsync.controller.ActivitiesController">
+<ScrollPane
+        fitToWidth="true"
+        styleClass="shell-content"
+        style="-fx-background: #191919; -fx-background-color: transparent;"
+        xmlns="http://javafx.com/javafx/21"
+        xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="com.example.classsync.controller.ActivitiesController">
     <content>
-        <VBox spacing="16.0">
+        <VBox spacing="16.0" styleClass="shell-content">
             <padding>
-                <Insets bottom="32.0" left="24.0" right="24.0" top="24.0" />
+                <Insets bottom="32.0" left="4.0" right="4.0" top="4.0" />
             </padding>
-            <children>
-                <!-- Control Header Container Bar -->
-                <HBox alignment="CENTER_LEFT">
-                    <children>
-                        <VBox spacing="4.0">
-                            <children>
-                                <Label text="Recent Notifications" textFill="#f0f0f4">
-                                    <font>
-                                        <Font name="System Bold" size="16.0" />
-                                    </font>
-                                </Label>
-                                <Label fx:id="unreadLabel" text="0 unread" textFill="#8a8a96">
-                                    <font>
-                                        <Font size="12.0" />
-                                    </font>
-                                </Label>
-                            </children>
-                        </VBox>
-                        <HBox HBox.hgrow="ALWAYS" />
-                        <Button mnemonicParsing="false" onAction="#markAllRead" styleClass="cs-btn-ghost" style="-fx-background-color: transparent; -fx-text-fill: #e94560; -fx-cursor: hand;" text="Mark all as read" />
-                    </children>
-                </HBox>
 
-                <!-- Main Content Stack Framework Container Container -->
-                <VBox fx:id="notifList" style="-fx-background-color: #232329; -fx-background-radius: 8; -fx-border-color: rgba(255,255,255,0.06); -fx-border-width: 1; -fx-border-radius: 8;" />
-            </children>
+            <!-- Header -->
+            <HBox alignment="CENTER_LEFT">
+                <VBox spacing="4.0" HBox.hgrow="ALWAYS">
+                    <Label text="Recent Notifications" styleClass="page-title" />
+                    <Label fx:id="unreadLabel" text="All caught up" styleClass="workspace-subtitle" />
+                </VBox>
+                <Button mnemonicParsing="false"
+                        onAction="#markAllRead"
+                        styleClass="cs-btn-ghost"
+                        style="-fx-text-fill: #e94560;"
+                        text="Mark all as read" />
+            </HBox>
+
+            <!-- Notification list -->
+            <VBox fx:id="notifList" styleClass="detail-panel" spacing="0" />
         </VBox>
     </content>
 </ScrollPane>

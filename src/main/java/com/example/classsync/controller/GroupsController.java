@@ -9,7 +9,6 @@ import com.example.classsync.session.Session;
 import com.example.classsync.util.AvatarFactory;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -32,7 +31,7 @@ public class GroupsController {
 
         if (myGroups.isEmpty()) {
             Label empty = new Label("You are not in any groups yet.");
-            empty.setStyle("-fx-text-fill: #8a8a96; -fx-font-size: 13px;");
+            empty.getStyleClass().add("placeholder-label");
             groupList.getChildren().add(empty);
             return;
         }
@@ -43,26 +42,24 @@ public class GroupsController {
     }
 
     private VBox buildCard(Group group) {
-        VBox card = new VBox(14);
+        VBox card = new VBox(12);
         card.getStyleClass().add("cs-card");
         card.setCursor(javafx.scene.Cursor.HAND);
 
-        // ── Top row: name + role badge ──
+        // Top row: name + role badge
         HBox topRow = new HBox(10);
         topRow.setAlignment(Pos.CENTER_LEFT);
 
         Label name = new Label(group.getName());
-        name.setStyle("-fx-font-size: 16px; -fx-font-weight: 700; -fx-text-fill: #f0f0f4;");
+        name.setStyle("-fx-font-size: 15px; -fx-font-weight: 700; -fx-text-fill: #e8e8e5;");
         HBox.setHgrow(name, Priority.ALWAYS);
 
-        // Show leader/member badge based on THIS group
         boolean isLeaderHere = group.isLeader(me);
         Label roleBadge = new Label(isLeaderHere ? "LEADER" : "MEMBER");
         roleBadge.getStyleClass().add(isLeaderHere ? "badge-accent" : "badge-blue");
-
         topRow.getChildren().addAll(name, roleBadge);
 
-        // ── Course + section badges ──
+        // Course + section badges
         HBox badges = new HBox(6);
         badges.setAlignment(Pos.CENTER_LEFT);
         if (!group.getCourse().isBlank()) {
@@ -76,23 +73,24 @@ public class GroupsController {
             badges.getChildren().add(sec);
         }
 
-        // ── Member avatars ──
+        // Member avatars
         HBox avatarRow = new HBox(6);
         avatarRow.setAlignment(Pos.CENTER_LEFT);
         List<User> members = group.getUsers();
         int shown = Math.min(members.size(), 6);
         for (int i = 0; i < shown; i++) {
-            avatarRow.getChildren().add(AvatarFactory.make(members.get(i), 28));
+            avatarRow.getChildren().add(AvatarFactory.make(members.get(i), 26));
         }
         if (members.size() > 6) {
             Label more = new Label("+" + (members.size() - 6));
-            more.setStyle("-fx-font-size: 11px; -fx-text-fill: #8a8a96;");
+            more.setStyle("-fx-font-size: 11px; -fx-text-fill: #8a8a8a;");
             avatarRow.getChildren().add(more);
         }
-        Label memberCount = new Label(members.size() + " members");
-        memberCount.setStyle("-fx-font-size: 11px; -fx-text-fill: #8a8a96;");
 
-        // ── Task progress ──
+        Label memberCount = new Label(members.size() + " members");
+        memberCount.setStyle("-fx-font-size: 11px; -fx-text-fill: #8a8a8a;");
+
+        // Progress bar
         List<Task> groupTasks = data.getTasksForGroup(group.getId());
         int total     = groupTasks.size();
         int completed = (int) groupTasks.stream()
@@ -102,33 +100,24 @@ public class GroupsController {
         progressRow.setAlignment(Pos.CENTER_LEFT);
         ProgressBar pb = new ProgressBar(total > 0 ? (double) completed / total : 0);
         pb.setPrefWidth(160);
-        pb.setStyle("-fx-accent: #e94560; -fx-pref-height: 4; -fx-background-radius: 4;");
+        pb.getStyleClass().add("progress-bar");
         Label progressLabel = new Label(completed + "/" + total + " tasks");
-        progressLabel.setStyle("-fx-font-size: 11px; -fx-text-fill: #8a8a96;");
+        progressLabel.setStyle("-fx-font-size: 11px; -fx-text-fill: #8a8a8a;");
         progressRow.getChildren().addAll(pb, progressLabel);
 
         card.getChildren().addAll(topRow, badges, avatarRow, memberCount, progressRow);
-
-        // ── Click → open group detail ──
         card.setOnMouseClicked(e -> openGroupDetail(group));
-
         return card;
     }
 
     private void openGroupDetail(Group group) {
         try {
-            // Store selected group in session for the detail controller to pick up
             Session.get().setSelectedGroup(group);
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/com/example/classsync/fxml/group_detail.fxml"));
             Node detail = loader.load();
-
-            // Navigate in the shell's content pane
-            StackPane contentPane = (StackPane) groupList.getScene()
-                    .lookup("#contentPane");
-            if (contentPane != null) {
-                contentPane.getChildren().setAll(detail);
-            }
+            StackPane contentPane = (StackPane) groupList.getScene().lookup("#contentPane");
+            if (contentPane != null) contentPane.getChildren().setAll(detail);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

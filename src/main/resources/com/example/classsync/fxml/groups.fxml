@@ -4,23 +4,21 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 
-<ScrollPane fitToWidth="true" style="-fx-background: #1a1a1e; -fx-background-color: transparent; -fx-viewport-background: #1a1a1e;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.classsync.controller.GroupsController">
+<ScrollPane
+        fitToWidth="true"
+        styleClass="shell-content"
+        style="-fx-background: #191919; -fx-background-color: transparent;"
+        xmlns="http://javafx.com/javafx/21"
+        xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="com.example.classsync.controller.GroupsController">
     <content>
-        <VBox spacing="16.0">
+        <VBox spacing="12.0" styleClass="shell-content">
             <padding>
-                <Insets bottom="32.0" left="24.0" right="24.0" top="24.0" />
+                <Insets bottom="32.0" left="4.0" right="4.0" top="4.0" />
             </padding>
-            <children>
-                <Label text="Your Groups" textFill="#f0f0f4">
-                    <font>
-                        <Font name="System Bold" size="16.0" />
-                    </font>
-                </Label>
-                <!-- Populated programmatically via runtime loop via buildCard -->
-                <VBox fx:id="groupList" spacing="14.0" />
-            </children>
+            <Label text="Your Groups" styleClass="page-title" />
+            <VBox fx:id="groupList" spacing="10.0" />
         </VBox>
     </content>
 </ScrollPane>

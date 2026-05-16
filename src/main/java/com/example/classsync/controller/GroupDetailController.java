@@ -22,10 +22,10 @@ import java.util.List;
 
 public class GroupDetailController {
 
-    @FXML private Label groupName;
-    @FXML private HBox  groupMeta;
-    @FXML private VBox  taskList;
-    @FXML private VBox  memberList;
+    @FXML private Label  groupName;
+    @FXML private HBox   groupMeta;
+    @FXML private VBox   taskList;
+    @FXML private VBox   memberList;
     @FXML private Button btnAddTask;
 
     private final MockData data  = MockData.get();
@@ -39,11 +39,9 @@ public class GroupDetailController {
 
         groupName.setText(group.getName());
 
-        // Meta badges
         if (!group.getCourse().isBlank()) groupMeta.getChildren().add(badge(group.getCourse(), "badge-muted"));
         if (!group.getSection().isBlank()) groupMeta.getChildren().add(badge(group.getSection(), "badge-muted"));
 
-        // Show "Post Task" button only if the user is leader of this group
         boolean isLeader = group.isLeader(me);
         btnAddTask.setVisible(isLeader);
         btnAddTask.setManaged(isLeader);
@@ -52,40 +50,33 @@ public class GroupDetailController {
         renderMembers();
     }
 
-    // ── Render tasks ──────────────────────────────────────────────────────────
-
     private void renderTasks() {
         taskList.getChildren().clear();
         List<Task> tasks = data.getTasksForGroup(group.getId());
 
         if (tasks.isEmpty()) {
             Label empty = new Label("No tasks yet.");
-            empty.setStyle("-fx-text-fill: #8a8a96; -fx-font-size: 13px;");
+            empty.getStyleClass().add("placeholder-label");
             taskList.getChildren().add(empty);
             return;
         }
 
-        for (Task t : tasks) {
-            taskList.getChildren().add(buildTaskRow(t));
-        }
+        for (Task t : tasks) taskList.getChildren().add(buildTaskRow(t));
     }
 
     private HBox buildTaskRow(Task task) {
         HBox row = new HBox(12);
         row.setAlignment(Pos.CENTER_LEFT);
-        row.setPadding(new Insets(12));
-        row.setStyle("-fx-background-color: #232329; -fx-background-radius: 8; " +
-                "-fx-border-color: rgba(255,255,255,0.06); -fx-border-radius: 8; -fx-border-width: 1;");
+        row.getStyleClass().add("task-row");
 
-        // Status pill
         Label statusPill = new Label(statusText(task.getStatus()));
         statusPill.getStyleClass().add(statusStyle(task.getStatus()));
 
-        // Title + assignee
-        VBox textBlock = new VBox(3);
+        VBox textBlock = new VBox(4);
         HBox.setHgrow(textBlock, Priority.ALWAYS);
+
         Label title = new Label(task.getTitle());
-        title.setStyle("-fx-font-size: 13px; -fx-font-weight: 600; -fx-text-fill: #f0f0f4;");
+        title.setStyle("-fx-font-size: 13px; -fx-font-weight: 600; -fx-text-fill: #e8e8e5;");
         title.setWrapText(true);
 
         HBox meta = new HBox(6);
@@ -93,26 +84,23 @@ public class GroupDetailController {
         if (task.getAssignee() != null) {
             meta.getChildren().add(AvatarFactory.make(task.getAssignee(), 16));
             Label aName = new Label(task.getAssignee().getName());
-            aName.setStyle("-fx-font-size: 11px; -fx-text-fill: #8a8a96;");
+            aName.setStyle("-fx-font-size: 11px; -fx-text-fill: #8a8a8a;");
             meta.getChildren().add(aName);
         }
         if (task.getDeadline() != null) {
             Label dl = new Label("· " + task.getDeadline()
                     .format(DateTimeFormatter.ofPattern("MMM d")));
-            dl.setStyle("-fx-font-size: 11px; -fx-text-fill: #8a8a96;");
+            dl.setStyle("-fx-font-size: 11px; -fx-text-fill: #8a8a8a;");
             meta.getChildren().add(dl);
         }
         textBlock.getChildren().addAll(title, meta);
         row.getChildren().addAll(statusPill, textBlock);
 
-        // If this task belongs to me, allow status update
         if (task.getAssignee() != null && task.getAssignee().getId().equals(me.getId())) {
             ComboBox<String> statusBox = new ComboBox<>();
             statusBox.getItems().addAll("PENDING", "IN PROGRESS", "COMPLETED");
             statusBox.setValue(statusText(task.getStatus()));
-            statusBox.setStyle(
-                    "-fx-background-color: #2a2a31; -fx-text-fill: #f0f0f4; " +
-                            "-fx-font-size: 11px; -fx-background-radius: 6;");
+            statusBox.getStyleClass().add("combo-box");
             statusBox.setOnAction(e -> {
                 task.setStatus(fromText(statusBox.getValue()));
                 renderTasks();
@@ -122,8 +110,6 @@ public class GroupDetailController {
 
         return row;
     }
-
-    // ── Render members ────────────────────────────────────────────────────────
 
     private void renderMembers() {
         memberList.getChildren().clear();
@@ -135,16 +121,16 @@ public class GroupDetailController {
     private HBox buildMemberRow(Group.Member m) {
         HBox row = new HBox(10);
         row.setAlignment(Pos.CENTER_LEFT);
-        row.setPadding(new Insets(8));
-        row.setStyle("-fx-background-radius: 8;");
+        row.getStyleClass().add("member-row");
 
-        StackPane av = AvatarFactory.make(m.user(), 34);
+        StackPane av = AvatarFactory.make(m.user(), 32);
         VBox info = new VBox(2);
         HBox.setHgrow(info, Priority.ALWAYS);
+
         Label name = new Label(m.user().getName());
-        name.setStyle("-fx-font-size: 13px; -fx-font-weight: 600; -fx-text-fill: #f0f0f4;");
+        name.setStyle("-fx-font-size: 13px; -fx-font-weight: 600; -fx-text-fill: #e8e8e5;");
         Label sec = new Label(m.user().getSection().isBlank() ? "No section" : m.user().getSection());
-        sec.setStyle("-fx-font-size: 11px; -fx-text-fill: #8a8a96;");
+        sec.setStyle("-fx-font-size: 11px; -fx-text-fill: #8a8a8a;");
         info.getChildren().addAll(name, sec);
 
         Label roleBadge = new Label(m.isLeader() ? "LEADER" : "MEMBER");
@@ -154,24 +140,33 @@ public class GroupDetailController {
         return row;
     }
 
-    // ── Add Task dialog (leader only) ─────────────────────────────────────────
-
     @FXML
     private void showAddTaskDialog() {
-        VBox root = new VBox(16);
-        root.setPadding(new Insets(28));
-        root.setStyle("-fx-background-color: #232329; -fx-background-radius: 12;");
-        root.setPrefWidth(420);
+        VBox root = new VBox(0);
+        root.getStyleClass().add("dialog-box");
+        root.setPrefWidth(440);
 
+        // Header
+        HBox header = new HBox();
+        header.setAlignment(Pos.CENTER_LEFT);
+        header.setPadding(new Insets(20, 24, 16, 24));
+        header.setStyle("-fx-border-color: #2e2e2e; -fx-border-width: 0 0 1 0;");
         Label title = new Label("Post Task to \"" + group.getName() + "\"");
-        title.setStyle("-fx-font-size: 15px; -fx-font-weight: 700; -fx-text-fill: #f0f0f4;");
+        title.getStyleClass().add("dialog-title");
+        header.getChildren().add(title);
+
+        // Form body
+        VBox body = new VBox(14);
+        body.setPadding(new Insets(20, 24, 20, 24));
 
         // Task title
-        Label tLabel = fieldLabel("Task Title");
-        TextField tField = styledField("e.g. Design the login screen");
+        Label tLabel = dialogFieldLabel("TASK TITLE");
+        TextField tField = new TextField();
+        tField.setPromptText("e.g. Design the login screen");
+        tField.getStyleClass().add("cs-field");
 
         // Description
-        Label dLabel = fieldLabel("Description");
+        Label dLabel = dialogFieldLabel("DESCRIPTION");
         TextArea dArea = new TextArea();
         dArea.setPromptText("Describe what needs to be done…");
         dArea.setPrefRowCount(3);
@@ -179,35 +174,39 @@ public class GroupDetailController {
         dArea.getStyleClass().add("cs-area");
 
         // Assign to
-        Label aLabel = fieldLabel("Assign To");
+        Label aLabel = dialogFieldLabel("ASSIGN TO");
         ComboBox<User> assignBox = new ComboBox<>();
         assignBox.getItems().addAll(group.getUsers());
         assignBox.setPromptText("Select member…");
         assignBox.setMaxWidth(Double.MAX_VALUE);
-        assignBox.setStyle("-fx-background-color: #2a2a31; -fx-text-fill: #f0f0f4; -fx-background-radius: 8;");
+        assignBox.getStyleClass().add("combo-box");
 
         // Error
         Label errLabel = new Label("");
         errLabel.setStyle("-fx-text-fill: #e94560; -fx-font-size: 11px;");
 
-        // Buttons
-        HBox btnRow = new HBox(10);
-        btnRow.setAlignment(Pos.CENTER_RIGHT);
+        body.getChildren().addAll(tLabel, tField, dLabel, dArea, aLabel, assignBox, errLabel);
+
+        // Footer
+        HBox footer = new HBox(10);
+        footer.setAlignment(Pos.CENTER_RIGHT);
+        footer.setPadding(new Insets(14, 24, 20, 24));
+        footer.setStyle("-fx-border-color: #2e2e2e; -fx-border-width: 1 0 0 0;");
         Button cancel = new Button("Cancel");
         cancel.getStyleClass().add("cs-btn-ghost");
         Button post = new Button("Post Task");
         post.getStyleClass().add("cs-btn-primary");
-        btnRow.getChildren().addAll(cancel, post);
+        footer.getChildren().addAll(cancel, post);
 
-        root.getChildren().addAll(title, tLabel, tField, dLabel, dArea,
-                aLabel, assignBox, errLabel, btnRow);
+        root.getChildren().addAll(header, body, footer);
 
         Stage dialog = new Stage(StageStyle.UNDECORATED);
         dialog.initModality(Modality.APPLICATION_MODAL);
         Scene scene = new Scene(root);
-        try { scene.getStylesheets().add(
-                getClass().getResource("/com/example/classsync/css/app.css").toExternalForm());
-        } catch (Exception ignored) {}
+        scene.getStylesheets().add(
+                getClass().getResource("/css/app.css").toExternalForm());
+        scene.setFill(javafx.scene.paint.Color.TRANSPARENT);
+        dialog.initStyle(StageStyle.TRANSPARENT);
         dialog.setScene(scene);
         dialog.centerOnScreen();
 
@@ -232,7 +231,11 @@ public class GroupDetailController {
         dialog.show();
     }
 
-    // ── Back navigation ───────────────────────────────────────────────────────
+    private Label dialogFieldLabel(String text) {
+        Label l = new Label(text);
+        l.getStyleClass().add("dialog-field-label");
+        return l;
+    }
 
     @FXML
     private void goBack() {
@@ -244,8 +247,6 @@ public class GroupDetailController {
         } catch (Exception e) { e.printStackTrace(); }
     }
 
-    // ── Helpers ───────────────────────────────────────────────────────────────
-
     private Label badge(String text, String styleClass) {
         Label l = new Label(text);
         l.getStyleClass().add(styleClass);
@@ -254,15 +255,8 @@ public class GroupDetailController {
 
     private Label fieldLabel(String text) {
         Label l = new Label(text);
-        l.setStyle("-fx-font-size: 11px; -fx-font-weight: 600; -fx-text-fill: #8a8a96;");
+        l.setStyle("-fx-font-size: 11px; -fx-font-weight: 600; -fx-text-fill: #8a8a8a;");
         return l;
-    }
-
-    private TextField styledField(String prompt) {
-        TextField tf = new TextField();
-        tf.setPromptText(prompt);
-        tf.getStyleClass().add("cs-field");
-        return tf;
     }
 
     private String statusText(TaskStatus s) {

@@ -12,7 +12,7 @@ import java.util.Optional;
  * Single source of truth for all mock data.
  * Replace this with real DAO/service calls when connecting to Supabase.
  */
-public class MockData {
+public class  MockData {
 
     private static MockData instance;
     public static MockData get() {

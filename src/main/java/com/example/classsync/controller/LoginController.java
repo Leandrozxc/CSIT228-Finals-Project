@@ -40,7 +40,6 @@ public class LoginController {
         User user = result.get();
         Session.get().setCurrentUser(user);
 
-        // Route to correct shell based on role
         try {
             String fxml = user.getRole() == Role.STUDENT
                     ? "shell_student.fxml"
@@ -49,6 +48,11 @@ public class LoginController {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/com/example/classsync/fxml/" + fxml));
             Scene scene = new Scene(loader.load(), 1100, 700);
+
+            scene.getStylesheets().add(
+                    getClass().getResource("/css/app.css").toExternalForm()
+            );
+
             Stage stage = (Stage) emailField.getScene().getWindow();
             stage.setScene(scene);
             stage.centerOnScreen();

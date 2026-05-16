@@ -9,6 +9,9 @@ public class Notification {
     private final String        message;
     private final LocalDateTime timestamp;
     private boolean             read;
+    private String              description;
+
+
 
     public Notification(String id, String targetUserId, String groupId,
                         String message, LocalDateTime timestamp) {
@@ -27,4 +30,6 @@ public class Notification {
     public LocalDateTime getTimestamp()    { return timestamp; }
     public boolean       isRead()          { return read; }
     public void          markRead()        { this.read = true; }
+    public String       getDescription()    { return description; }
+    public void setDescription(String description) { this.description = description; }
 }

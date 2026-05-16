@@ -12,6 +12,7 @@ public class Main extends Application {
         FXMLLoader loader = new FXMLLoader(
                 getClass().getResource("/com/example/classsync/fxml/login.fxml"));
         Scene scene = new Scene(loader.load(), 1100, 700);
+        scene.getStylesheets().add(getClass().getResource("/css/app.css").toExternalForm());
         stage.setTitle("ClassSync");
         stage.setScene(scene);
         stage.setMinWidth(900);
